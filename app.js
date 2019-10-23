@@ -9,7 +9,7 @@ const config = require('./utils/config')
 const MongoURI = config.MONGODB_URI
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./controllers/users');
 var app = express();
 mongoose.connect(MongoURI, { 
   useNewUrlParser: true,
@@ -23,7 +23,9 @@ mongoose.connect(MongoURI, {
   })
 
 app.use(session({
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  store: new MongoStore(
+    { mongooseConnection: mongoose.connection, 
+      collection: "sessions" }),
   secret: config.SESSION_SECRET,
   saveUninitialized: true,
   resave: false
@@ -35,11 +37,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/build/index.html')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
 
 app.get('*', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
-app.use('/users', usersRouter);
 
 module.exports = app;
