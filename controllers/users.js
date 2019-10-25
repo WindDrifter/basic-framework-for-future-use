@@ -9,7 +9,7 @@ usersRouter.get('', async (request, response, next) => {
   catch(exception){
     next(exception)
   }
-  })
+})
   
 usersRouter.post('', async (request, response, next) => {
   try{
@@ -45,24 +45,19 @@ usersRouter.put('/:id', async (request, response, next) => {
   }
   catch(exception){
     next(exception)
-
   }
-
 })
-
 
 usersRouter.get('/:id', async (request, response, next) => {
   const id = request.params.id
   try{
-    const result = User.findById(id)
+    const result = await User.findById(id)
     response.json(result)
   }
   catch(exception){
+    console.log(exception)
     next(exception)
-
   }
-
 })
-
 
 module.exports = usersRouter

@@ -8,7 +8,7 @@ const saltrounds = 11
 var UserSchema = new Schema({
   name:  String,
   username: {type: String, required: true, unique: true, index: true},
-  password: {type: String, required: true},
+  password: {type: String, required: true, minlength: 8},
   email: {type: String, required: true},
   displayname: String,
   recoveryID: String, // for forget password
@@ -36,7 +36,6 @@ UserSchema.set('toJSON', {
       delete returnedObject.password
   }
 })
-
 
 var User = mongoose.model('User', UserSchema)
 
