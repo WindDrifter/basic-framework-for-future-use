@@ -37,6 +37,26 @@ UserSchema.set('toJSON', {
   }
 })
 
+UserSchema.statics.findByUserName = function(username) {
+  return this.find({ username: new RegExp(username, 'i') });
+}
+
+UserSchema.statics.findOneByUserName = function(username){
+  return this.findOne({username: username})
+}
+
+UserSchema.statics.loginUser = async function(username, plainPassword) {
+  const user = await this.findOneByUserName(username)
+  return await bcrypt.compare(plainPassword, user.password)
+}
+
+UserSchema.virtual('id').get(function(){
+  return this._id
+});
+
+
+
+
 var User = mongoose.model('User', UserSchema)
 
 module.exports = User

@@ -46,7 +46,7 @@ describe('user api test', function() {
   })
   it('ensure getting user do not return password hash as well', async function(){
     const randomUser = await User.findOne({})
-    const userID = randomUser._id
+    const userID = randomUser.id
     const response = await api.get(`/api/users/${userID}`)
     expect(response.status).to.equal(200)
     expect(response.password).to.equal(undefined)
