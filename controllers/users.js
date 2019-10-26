@@ -55,7 +55,6 @@ usersRouter.get('/:id', async (request, response, next) => {
     response.json(result)
   }
   catch(exception){
-    console.log(exception)
     next(exception)
   }
 })

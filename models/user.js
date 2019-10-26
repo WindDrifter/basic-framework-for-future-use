@@ -6,10 +6,10 @@ const saltrounds = 11
 
 
 var UserSchema = new Schema({
-  name:  String,
+  name:  {type: String, required: true},
   username: {type: String, required: true, unique: true, index: true},
   password: {type: String, required: true, minlength: 8},
-  email: {type: String, required: true},
+  email: {type: String, unique: true, required: true},
   displayname: String,
   recoveryID: String, // for forget password
   validateID: String  // for registration url
@@ -45,17 +45,18 @@ UserSchema.statics.findOneByUserName = function(username){
   return this.findOne({username: username})
 }
 
-UserSchema.statics.loginUser = async function(username, plainPassword) {
-  const user = await this.findOneByUserName(username)
+UserSchema.statics.findOneByEmail = function(email){
+  return this.findOne({email: email})
+}
+
+UserSchema.statics.loginUser = async function(usernameOrEmail, plainPassword) {
+  const user = await this.findOne().or([{username: usernameOrEmail}, {email: usernameOrEmail}])
   return await bcrypt.compare(plainPassword, user.password)
 }
 
 UserSchema.virtual('id').get(function(){
   return this._id
 });
-
-
-
 
 var User = mongoose.model('User', UserSchema)
 

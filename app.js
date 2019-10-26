@@ -1,15 +1,16 @@
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var morgan = require('morgan');
 const mongoose = require('mongoose')
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const config = require('./utils/config')
+const middleware = require('./utils/middleware')
+const indexRouter = require('./routes/index');
+const usersRouter = require('./controllers/users');
 const MongoURI = config.MONGODB_URI
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./controllers/users');
 var app = express();
 mongoose.connect(MongoURI, { 
   useNewUrlParser: true,
@@ -30,7 +31,7 @@ app.use(session({
   saveUninitialized: true,
   resave: false
 }));
-app.use(logger('dev'));
+app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,6 +39,9 @@ app.use(express.static(path.join(__dirname, '/client/build/index.html')));
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 app.get('*', (req,res) =>{
   res.sendFile(path.join(__dirname+'/client/build/index.html'));

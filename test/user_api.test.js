@@ -15,8 +15,8 @@ describe('user api test', function() {
     const promiseArray = await userObjects.map(user => user.save())
     await Promise.all(promiseArray)
   })
-  
-  it('all users are returned', async function(){
+  describe('getting users', function(){
+    it('all users are returned', async function(){
       try{
           const response = await api.get('/api/users')
           expect(response.status).to.equal(200)
@@ -25,8 +25,18 @@ describe('user api test', function() {
       catch(error){
           console.log(error)
       }
+    })
+    it('ensure when getting user do not return password hash as well', async function(){
+      const randomUser = await User.findOne({})
+      const userID = randomUser.id
+      const response = await api.get(`/api/users/${userID}`)
+      expect(response.status).to.equal(200)
+      expect(response.body).not.to.equal(undefined)
+      expect(response.body.password).to.equal(undefined)
+    })
   })
-  it('ensure a user can be added', async function(){
+  describe('creating users', function(){
+    it('ensure a user can be added', async function(){
       try{
         const newUser = {
             name: 'Blog blah',
@@ -43,14 +53,9 @@ describe('user api test', function() {
       catch(error){
           console.log(error)
       }
+    })
   })
-  it('ensure getting user do not return password hash as well', async function(){
-    const randomUser = await User.findOne({})
-    const userID = randomUser.id
-    const response = await api.get(`/api/users/${userID}`)
-    expect(response.status).to.equal(200)
-    expect(response.password).to.equal(undefined)
-  })
+  
   after(() => {
     mongoose.connection.close()
   })

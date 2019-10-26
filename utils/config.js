@@ -1,4 +1,5 @@
 require('dotenv').config()
+const MongoMemoryServer = require('mongodb-memory-server')
 
 let PORT = process.env.PORT
 const databasename = 'alphatest'
@@ -8,7 +9,11 @@ const mongoURL = process.env.mongoURL
 let MONGODB_URI = mongoURL ?  `mongodb://${user}:${password}@${mongoURL}` : `mongodb://localhost:27017/${databasename}`
 if (process.env.NODE_ENV === 'test') 
   {  
-    MONGODB_URI = process.env.TEST_MONGODB_URI
+    // using in memory server for test to avoid creating one
+    const mongoServer = new MongoMemoryServer.MongoMemoryServer();
+    mongoServer.getConnectionString().then((value)=>{
+      MONGODB_URI=value
+    })
   }
 const SESSION_SECRET = process.env.session_secret || "bacon"
 module.exports = {

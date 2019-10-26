@@ -8,7 +8,8 @@ router.get('/hello', function(req, res, next) {
 });
 
 router.post('/api/login', function(req, res, next) {
-  data = req.json()
+  const body = request.body
+  
     
 
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const MongoMemoryServer = require('mongodb-memory-server')
 const User = require('../models/user')
 initialUsers =[
   {
@@ -25,17 +26,14 @@ const usersInDb = async () => {
   const users = await User.find({})
   return users.map(u => u.toJSON())
 }
-const connectServer = function(){
-  mongoose.connect('mongodb://localhost:27017/test', { 
+const connectServer = async function(){
+  const mongoServer = new MongoMemoryServer.MongoMemoryServer();
+  const mongoUri = await mongoServer.getConnectionString()
+  mongoose.connect(mongoUri, { 
   useNewUrlParser: true,
   useUnifiedTopology: true 
-})
-  .then(() => {
-    console.log('connected to MongoDB')
   })
-  .catch((error) => {
-    console.log('error connection to MongoDB:', error.message)
-  })
+
 }
 
 const closeServer = function(){
