@@ -7,9 +7,10 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
-const indexRouter = require('./routes/index');
+const indexRouter = require('./controllers/index');
 const usersRouter = require('./controllers/users');
 const MongoURI = config.MONGODB_URI
+const uuidv4 = require('uuid/v4');
 
 var app = express();
 mongoose.connect(MongoURI, { 
@@ -26,9 +27,14 @@ mongoose.connect(MongoURI, {
 app.use(session({
   store: new MongoStore(
     { mongooseConnection: mongoose.connection, 
-      collection: "sessions" }),
+      autoRemove: 'interval',
+      touchAfter: 1, 
+    }),
+  genid: function(req) {
+    return uuidv4()
+  },
   secret: config.SESSION_SECRET,
-  saveUninitialized: true,
+  saveUninitialized: false,
   resave: false
 }));
 app.use(morgan('combined'));

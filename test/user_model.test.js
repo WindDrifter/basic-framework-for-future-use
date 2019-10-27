@@ -5,7 +5,6 @@ const helper = require('./test_helper')
 
 
 describe('testing model', ()=>{ 
-  before(helper.connectServer)
   beforeEach(async function(){
     await User.deleteMany({})
     const userObjects = helper.initialUsers.map(user => new User(user))
@@ -88,5 +87,4 @@ describe('testing model', ()=>{
       expect(match).to.equal(true)
     })
   })
-  after(helper.closeServer)
 })

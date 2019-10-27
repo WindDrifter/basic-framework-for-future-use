@@ -7,6 +7,7 @@ usersRouter.get('', async (request, response, next) => {
     response.json(allBlogs)
   }
   catch(exception){
+    console.log(exception)
     next(exception)
   }
 })

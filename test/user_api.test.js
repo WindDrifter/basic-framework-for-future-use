@@ -9,7 +9,7 @@ var expect = require('chai').expect
 
 
 describe('user api test', function() {
-  before(async function(){
+  beforeEach(async function(){
     await User.deleteMany({})
     const userObjects = helper.initialUsers.map(user => new User(user))
     const promiseArray = await userObjects.map(user => user.save())
@@ -56,7 +56,4 @@ describe('user api test', function() {
     })
   })
   
-  after(() => {
-    mongoose.connection.close()
-  })
 })
