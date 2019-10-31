@@ -9,12 +9,12 @@ const mongoURL = process.env.mongoURL
 let MONGODB_URI = mongoURL ?  `mongodb://${user}:${password}@${mongoURL}` : `mongodb://localhost:27017/${databasename}`
 if (process.env.NODE_ENV === 'test') 
   {  
-    // // using in memory server for test to avoid creating one
-    // const mongoServer = new MongoMemoryServer.MongoMemoryServer();
-    // mongoServer.getConnectionString().then((value)=>{
-    //   MONGODB_URI=value
-    // })
-    MONGODB_URI = `mongodb://localhost:27017/testDB`
+    // using in memory server for test to avoid creating one
+    const mongoServer = new MongoMemoryServer.MongoMemoryServer();
+    mongoServer.getConnectionString().then((value)=>{
+      MONGODB_URI=value
+    })
+    // MONGODB_URI = `mongodb://localhost:27017/testDB`
   }
 const SESSION_SECRET = process.env.session_secret || "bacon"
 module.exports = {

@@ -21,9 +21,12 @@ describe('login/logout api test', function() {
       const username = user.username
       const password = user.password
       const result = await api.post('/api/login').send({username: username, password: password})
-      SessionIDCookie = result.headers['set-cookie'].pop().split(';')[0]
+      console.log(result)
+      expect(result.status).to.equal(200)
+      expect(result.body.success).to.equal(true)
+      // SessionIDCookie = result.headers['set-cookie'].pop().split(';')[0]
       // console.log(result)
-      expect(SessionIDCookie).not.to.equal(undefined)
+      // expect(SessionIDCookie).not.to.equal(undefined)
     })
     it('should have cookie updated', async function(){
       const sessionResult = await api.get('/api/session').set('Cookie',SessionIDCookie)
