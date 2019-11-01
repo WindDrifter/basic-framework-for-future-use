@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const indexRouter = require('./controllers/index');
+const protectedRouter = require('./controllers/protected');
 const usersRouter = require('./controllers/users');
 const MongoURI = config.MONGODB_URI
 const uuidv4 = require('uuid/v4');
@@ -45,7 +46,15 @@ app.use(express.static(path.join(__dirname, '/client/build/index.html')));
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
-
+app.use(function(req, res, next) {
+  if(req.session.userID){
+    next()
+  }
+  else{
+    res.status(403).json({message: 'Please Login'})
+  }
+});
+app.use('/api/protected', protectedRouter);
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 

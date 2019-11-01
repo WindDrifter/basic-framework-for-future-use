@@ -15,6 +15,12 @@ describe('login/logout api test', function() {
     await Promise.all(promiseArray)
   })
   describe('login user', function(){
+    it('should not able to access protected route', async function(){
+      const result = await api.get('/api/protected')
+      // console.log(sessionResult)
+      expect(result.status).to.equal(403)
+      expect(result.body.message).to.equal('Please Login')
+    })
     it('shoould get session saved', async function(){
       // expect(true).to.equal(false)
       const user = helper.initialUsers[0]
@@ -29,6 +35,18 @@ describe('login/logout api test', function() {
       const sessionResult = await api.get('/api/session').set('Cookie',SessionIDCookie)
       // console.log(sessionResult)
       expect(sessionResult.body.login).to.equal(true)
+    })
+    it('should able to access protected route', async function(){
+      const result = await api.get('/api/protected')
+      // console.log(sessionResult)
+      expect(result.status).to.equal(200)
+      expect(result.body.hello).to.equal('hello, you are protected')
+    })
+    it('should able to post to protected route', async function(){
+      const result = await api.post('/api/protected/testpost').send({test: 1, tet:2})
+      // console.log(sessionResult)
+      expect(result.status).to.equal(200)
+      expect(result.body).to.not.equal(undefined)
     })
   })
   // describe('creating users', function(){

@@ -4,9 +4,18 @@ const User = require('../models/user')
 const milisecondFun = require('../utils/milisecondFun')
 const CookieMaxAge = milisecondFun.dayToMiliseconds(30)
 /* GET home page. */
-router.get('/hello', function(req, res, next) {
-  res.json({hello: 'hello'})
-});
+// Same implementation as user/api post
+usersRouter.post('/register', async (request, response, next) => {
+  try{
+    const body = request.body
+    const user = new User(body)
+    const result = await user.save()
+    response.json(result)
+  }
+  catch(exception){
+    next(exception)
+  }
+})
 
 router.post('/api/login', async function(req, res, next) {
   const body = req.body
