@@ -7,7 +7,7 @@
     "test": "mocha --exit --timeout 3000"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "connect-mongo": "^3.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "^4.1.1",
